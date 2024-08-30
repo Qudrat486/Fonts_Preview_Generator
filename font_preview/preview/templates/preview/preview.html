@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: Beige;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .font-preview {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .font-preview span {
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+
+        .font-preview p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .font-preview a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .font-preview a:hover {
+            color: #2980b9;
+        }
+
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #3498db;
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .pagination a:hover {
+            color: #2980b9;
+        }
+    </style>
+    {% for font in page_obj %}
+    <style>
+        @font-face {
+            font-family: '{{ font.name }}';
+            src: url('{{ font.url }}') format('truetype');
+        }
+    </style>
+    {% endfor %}
+</head>
+<body>
+    <h1>FONTS PREVIEW GENERATOR</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Preview</button>
+    </form>
+
+    {% for font in page_obj %}
+    <div class="font-preview" style="font-family: '{{ font.name }}';">
+        <span>{{ word }}</span>
+        <p>{{ font.name }}</p>
+        <a href="{{ font.url }}" download="{{ font.file }}">Download {{ font.name }} (TTF)</a>
+    </div>
+    {% endfor %}
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&word={{ word }}">Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&word={{ word }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
